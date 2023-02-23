@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+</head>
+
+<body>
+    <h1>QR scanner</h1>
+    <input type="file" name="image" id="image">
+    <p id="label"></p>
+    <hr>
+    <video src="" id="video"></video>
+    <hr>
+    <p id="label1"></p>
+    <script>
+        const label = document.getElementById("label");
+        const label1 = document.getElementById("label1");
+
+        const image = new Image()
+        const img = document.getElementById('image');
+        img.addEventListener('change', (event) => {
+            image.src = URL.createObjectURL(event.target.files[0]);
+        })
+
+        image.addEventListener('load', () => {
+            const canvas = document.createElement('canvas')
+            canvas.width = image.width
+            canvas.height = image.height
+            const context = canvas.getContext('2d')
+            context.imageSmoothingEnabled = false
+            context.drawImage(image, 0, 0)
+            const imageData = context.getImageData(0, 0, image.width, image.height)
+            const code = new jsQR(imageData.data, image.width, image.height)
+            console.log("🚀 ~ file: testing.html:41 ~ image.addEventListener ~ code:", code)
+            label.innerText = code?.data
+        })
+
+        // if(navigator.)
+
+        const video = document.getElementById("video");
+        navigator.mediaDevices.getUserMedia({
+            audio: false,
+            video: true
+        })
+            .then((stream) => {
+                video.srcObject = stream;
+                video.play();
+                requestAnimationFrame(tick);
+
+            })
+            .catch((err) => {
+                /* handle the error */
+            });
+
+        function tick() {
+            if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                const canvas = document.createElement('canvas')
+                canvas.width = video.width
+                canvas.height = video.height
+                const context = canvas.getContext('2d')
+                context.imageSmoothingEnabled = false
+                context.drawImage(video, 0, 0)
+                const imageData = context.getImageData(0, 0, video.videoHeight, video.videoHeight)
+                var code = jsQR(imageData.data, imageData.width, imageData.height, {
+                    inversionAttempts: "dontInvert",
+                });
+                console.log("🚀 ~ file: testing.html:71 ~ tick ~ code:", code)
+                label1.innerText = code?.data
+            }
+            requestAnimationFrame(tick);
+        }
+
+
+    </script>
+</body>
+
+</html>
