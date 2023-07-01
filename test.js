@@ -37,10 +37,17 @@ const data = csvToArray(rawData)
 
 console.log(data)
 
+
+function hello(){
+  console.log('hello')
+}
+
+
 function sayHii(){
 console.log("Hii bro");
 }
                         
+
 /* 
 Working with downloaded Google Sheet data in CVS file format and also with normal CSV file
 Result:
